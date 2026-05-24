@@ -1,0 +1,1940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moner Gaan - Premium Lyrics Hub & Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Modern CSS Variables & Resets */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-accent: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --accent-color: #2563eb;
+            --accent-hover: #1d4ed8;
+            --danger-color: #ef4444;
+            --danger-hover: #dc2626;
+            --success-color: #10b981;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -4px rgba(0,0,0,0.05);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Serif Bengali', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* Top Menu Bar */
+        .menu-bar {
+            height: 70px;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .menu-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-accent);
+        }
+
+        .icon-btn img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .menu-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-logo {
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .menu-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .lyrics-counter-pill {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 6px 14px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .lyrics-counter-pill img {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100vh;
+            background: var(--bg-primary);
+            border-right: 1px solid var(--border-color);
+            z-index: 110;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-header h3 {
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .sidebar-item:hover, .sidebar-item.active {
+            background: var(--bg-accent);
+            color: var(--accent-color);
+        }
+
+        .sidebar-item img {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.2);
+            z-index: 105;
+            display: none;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* Main App Container Structure */
+        .app-container {
+            margin-top: 70px;
+            padding: 40px 24px;
+            max-width: 1280px;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: calc(100vh - 70px);
+        }
+
+        .page-view {
+            display: none;
+        }
+
+        .page-view.active-page {
+            display: block;
+        }
+
+        /* Page Headers */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 32px;
+            border-bottom: 2px solid var(--bg-accent);
+            padding-bottom: 16px;
+        }
+
+        .page-header img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Analytical Summary Cards Grid */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .summary-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .summary-icon-box {
+            width: 56px;
+            height: 56px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .summary-icon-box img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        .summary-info h4 {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .summary-info p {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Premium Modern Table Structure */
+        .table-container {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 32px;
+        }
+
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .modern-table th {
+            background: var(--bg-secondary);
+            padding: 16px 24px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modern-table td {
+            padding: 18px 24px;
+            font-size: 15px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modern-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-cell-with-icon {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-cell-with-icon img {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+        }
+
+        /* Modern Premium Input Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label img {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+        }
+
+        .form-control {
+            font-family: inherit;
+            padding: 12px 16px;
+            font-size: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Premium Buttons */
+        .btn-primary {
+            background: var(--accent-color);
+            color: #ffffff;
+            border: none;
+            padding: 14px 28px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: background 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        /* Modern Modern Search Inputs */
+        .search-container {
+            position: relative;
+            margin-bottom: 24px;
+            max-width: 500px;
+        }
+
+        .search-icon-inside {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        .search-control {
+            width: 100%;
+            padding: 12px 16px 12px 48px;
+            font-size: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            outline: none;
+            background: var(--bg-primary);
+        }
+
+        /* Lyrics Grid & Modern Multi-option Cards */
+        .lyrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .lyrics-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .lyrics-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-number-badge {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: var(--bg-accent);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header-info {
+            padding-right: 50px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .card-meta-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 12px 0;
+            border-top: 1px dashed var(--border-color);
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .meta-item img {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+        }
+
+        .card-actions {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .btn-view-details {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .btn-view-details:hover {
+            background: var(--bg-accent);
+        }
+
+        .btn-delete-card {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-delete-card:hover {
+            background: #fee2e2;
+        }
+
+        .btn-delete-card img {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+        }
+
+        /* Detailed Lyrics Modal View Page */
+        .lyrics-reader-view {
+            max-width: 720px;
+            margin: 0 auto;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 36px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .reader-nav {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .btn-back {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reader-title-area {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .reader-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .btn-copy-title {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            font-size: 13px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .lyrics-content-body {
+            font-family: 'Noto Serif Bengali', serif;
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+            margin-bottom: 32px;
+            padding: 24px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .reader-action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .btn-action-large {
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-copy-lyrics {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .btn-copy-lyrics:hover {
+            background: var(--bg-accent);
+        }
+
+        .btn-complete-lyrics {
+            background: var(--success-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-complete-lyrics:hover {
+            background: #059669;
+        }
+
+        /* Profile Page Styles */
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .profile-card-top {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--border-color);
+        }
+
+        .profile-names h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .profile-names p {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .social-links-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .social-icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .social-icon-btn:hover {
+            background: var(--bg-accent);
+        }
+
+        .social-icon-btn img {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+        }
+
+        .description-box {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .description-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .description-title img {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+        }
+
+        .description-text {
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+
+        .profile-section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 24px 0 16px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Thumbnail Page Upload Box */
+        .thumbnail-upload-area {
+            background: var(--bg-secondary);
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 32px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .thumbnail-upload-area:hover {
+            border-color: var(--accent-color);
+        }
+
+        .thumbnail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .thumbnail-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .thumbnail-image-container {
+            width: 100%;
+            aspect-ratio: 16 / 8;
+            background: var(--bg-accent);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .thumbnail-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .thumbnail-info-box {
+            padding: 16px;
+        }
+
+        .thumbnail-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Internal helper styling */
+        .edit-row-card-select {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-secondary);
+            margin-bottom: 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .edit-row-card-select:hover {
+            background: var(--bg-accent);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <header class="menu-bar">
+        <div class="menu-left">
+            <button class="icon-btn" onclick="toggleSidebar()" title="Open Navigation Menu">
+                <img src="3dot.png" alt="Menu Options Icon">
+            </button>
+        </div>
+        <div class="menu-center">
+            <img src="applogo.png" alt="Moner Gaan Logo" class="app-logo">
+        </div>
+        <div class="menu-right">
+            <div class="lyrics-counter-pill">
+                <img src="lyricscrad.png" alt="Lyrics Stack Counter">
+                <span id="global-lyrics-count">Cards: 0</span>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sidebar" id="appSidebar">
+        <div class="sidebar-header">
+            <h3>Moner Gaan</h3>
+            <button class="icon-btn" onclick="toggleSidebar()">&times;</button>
+        </div>
+        <div class="sidebar-item active" onclick="navigateToPage('home', this)">
+            <img src="home.png" alt="Home"> Home
+        </div>
+        <div class="sidebar-item" onclick="navigateToPage('trending', this)">
+            <img src="tranding.png" alt="Trending"> Trending
+        </div>
+        <div class="sidebar-item" onclick="navigateToPage('newlist', this)">
+            <img src="newlist.jpg" alt="New List"> New list
+        </div>
+        <div class="sidebar-item" onclick="navigateToPage('oldlist', this)">
+            <img src="Oldlist.png" alt="Old List"> Old list
+        </div>
+        <div class="sidebar-item" onclick="navigateToPage('lyricshub', this)">
+            <img src="lyricshub.png" alt="Lyrics Hub"> Lyrics hub
+        </div>
+        <div class="sidebar-item" onclick="navigateToPage('edit', this)">
+            <img src="Edit.png" alt="Edit Settings"> Edit
+        </div>
+        <div class="sidebar-item" onclick="navigateToPage('profile', this)">
+            <img src="profile.png" alt="User Profile"> Profile
+        </div>
+        <div class="sidebar-item" onclick="navigateToPage('earning', this)">
+            <img src="Earning.png" alt="Earning Overview"> Earning
+        </div>
+        <div class="sidebar-item" onclick="navigateToPage('thumbnail', this)">
+            <img src="thumbnail.png" alt="Thumbnails"> Thumbnail
+        </div>
+    </nav>
+
+    <main class="app-container">
+
+        <section id="page-home" class="page-view active-page">
+            <div class="page-header">
+                <img src="home.png" alt="Home icon">
+                <h1>Dashboard Analysis</h1>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-icon-box"><img src="totalviews.png" alt="Total Views"></div>
+                    <div class="summary-info">
+                        <h4>Total Views</h4>
+                        <p id="home-total-views">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon-box"><img src="totaleranning.png" alt="Total Earnings"></div>
+                    <div class="summary-info">
+                        <h4>Total Earnings</h4>
+                        <p>$<span id="home-total-earning">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-header" style="margin-top:20px; margin-bottom: 20px;">
+                <img src="analysis.png" alt="Analysis icon">
+                <h1 style="font-size: 20px;">Lyrics Performance Analysis</h1>
+            </div>
+
+            <div class="table-container">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th><div class="table-cell-with-icon"><img src="name.png" alt="Title Icon"> Lyrics Card Name</div></th>
+                            <th><div class="table-cell-with-icon"><img src="views.png" alt="Views Icon"> Views</div></th>
+                            <th><div class="table-cell-with-icon"><img src="Eran.png" alt="Earnings Icon"> Earning</div></th>
+                        </tr>
+                    </thead>
+                    <tbody id="home-analysis-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+
+        <section id="page-edit" class="page-view">
+            <div class="page-header">
+                <img src="Edit.png" alt="Edit Page Icon">
+                <h1>App Management & Content Customizer</h1>
+            </div>
+
+            <div style="background: var(--bg-primary); border: 1px solid var(--border-color); padding:28px; border-radius: var(--radius-lg); margin-bottom: 32px; box-shadow: var(--shadow-sm);">
+                <h2 style="font-size: 18px; font-weight:700; margin-bottom: 20px; display:flex; align-items:center; gap:10px;">
+                    <img src="lyricscreate.png" alt="Create Icon" style="width:22px;height:22px;"> Write New Lyrics Card
+                </h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label"><img src="name.png" alt="Name Icon"> Lyrics Name / Title</label>
+                        <input type="text" id="edit-lyrics-name" class="form-control" placeholder="Enter song title...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><img src="category.png" alt="Category Icon"> Select Category Pipeline</label>
+                        <select id="edit-lyrics-category" class="form-control">
+                            <option value="Trending">Trending</option>
+                            <option value="New list">New list</option>
+                            <option value="Old list">Old list</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Lyrics Content Lines (Start with Bengali text)</label>
+                        <textarea id="edit-lyrics-text" class="form-control" placeholder="এখানে গানের কথা বা লিরিক্স লিখুন..."></textarea>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="publishLyricsCard()">Publish Card</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; margin-bottom: 32px;">
+                
+                <div style="background: var(--bg-primary); border: 1px solid var(--border-color); padding:28px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+                    <h2 style="font-size: 18px; font-weight:700; margin-bottom: 16px; display:flex; align-items:center; gap:10px;">
+                        Update Individual Card Statistics
+                    </h2>
+                    <div class="search-container" style="max-width: 100%;">
+                        <img src="search.png" class="search-icon-inside" alt="Search">
+                        <input type="text" id="edit-card-search" class="search-control" placeholder="Search lyrics card name..." oninput="renderEditCardSelectionList()">
+                    </div>
+
+                    <div id="edit-card-selection-list" style="max-height: 220px; overflow-y: auto; margin-bottom: 16px; border:1px solid var(--border-color); padding:10px; border-radius: var(--radius-md);">
+                        </div>
+
+                    <div id="edit-stats-input-fields" style="display: none; border-top:1px solid var(--border-color); padding-top:16px;">
+                        <h4 id="edit-selected-card-title-display" style="margin-bottom: 12px; font-size:14px; color:var(--accent-color);">Selected: None</h4>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label class="form-label"><img src="views.png" style="width:16px;" alt="Views"> Views Count</label>
+                            <input type="number" id="edit-selected-views" class="form-control" value="0">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <label class="form-label"><img src="Eran.png" style="width:16px;" alt="Earning"> Earnings ($)</label>
+                            <input type="number" step="0.01" id="edit-selected-earning" class="form-control" value="0.00">
+                        </div>
+                        <button class="btn-primary" style="padding:10px 20px; font-size:14px;" onclick="saveSelectedCardMetrics()">Update Metrics</button>
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-primary); border: 1px solid var(--border-color); padding:28px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);">
+                    <h2 style="font-size: 18px; font-weight:700; margin-bottom: 20px;">Financial Fund Management Ledger</h2>
+                    
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label class="form-label"><img src="payout.png" style="width:16px;" alt="Payout"> Total Payout Withdrawn ($)</label>
+                        <input type="number" step="0.01" id="ledger-total-payout" class="form-control" value="0.00">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label class="form-label"><img src="pending.png" style="width:16px;" alt="Pending"> Pending Money Balances ($)</label>
+                        <input type="number" step="0.01" id="ledger-pending-money" class="form-control" value="0.00">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label class="form-label"><img src="lifetime.png" style="width:16px;" alt="Lifetime"> Lifetime Accumulation Income ($)</label>
+                        <input type="number" step="0.01" id="ledger-lifetime-income" class="form-control" value="0.00">
+                    </div>
+                    <button class="btn-primary" style="padding:10px 20px; font-size:14px;" onclick="saveFinancialLedgerInfo()">Update Global Ledger</button>
+                </div>
+
+            </div>
+        </section>
+
+
+        <section id="page-trending" class="page-view">
+            <div class="page-header"><img src="tranding.png" alt="Trending Page Icon"> <h1>Trending Pipeline Category</h1></div>
+            <div class="lyrics-grid" id="grid-trending"></div>
+        </section>
+
+        <section id="page-newlist" class="page-view">
+            <div class="page-header"><img src="newlist.jpg" alt="New List Page Icon"> <h1>New List Pipeline Category</h1></div>
+            <div class="lyrics-grid" id="grid-newlist"></div>
+        </section>
+
+        <section id="page-oldlist" class="page-view">
+            <div class="page-header"><img src="Oldlist.png" alt="Old List Page Icon"> <h1>Old List Pipeline Category</h1></div>
+            <div class="lyrics-grid" id="grid-oldlist"></div>
+        </section>
+
+
+        <section id="page-lyricshub" class="page-view">
+            <div class="page-header">
+                <img src="lyricshub.png" alt="Lyrics Hub Page Icon">
+                <h1>Completed Lyrics Vault</h1>
+            </div>
+            <div class="lyrics-grid" id="grid-lyricshub"></div>
+        </section>
+
+
+        <section id="page-lyrics-details-reader" class="page-view">
+            <div class="lyrics-reader-view">
+                <div class="reader-nav">
+                    <button class="btn-back" onclick="navigateBackFromReader()">
+                         &larr; Back
+                    </button>
+                </div>
+                <div class="reader-title-area">
+                    <h2 class="reader-title" id="reader-display-title">Song Title</h2>
+                    <button class="btn-copy-title" onclick="copyTitleToClipboard()">
+                        Copy Title
+                    </button>
+                </div>
+                <div class="lyrics-content-body" id="reader-display-body">
+                    </div>
+                <div class="reader-action-buttons">
+                    <button class="btn-action-large btn-copy-lyrics" onclick="copyLyricsContentToClipboard()">
+                        Copy Lyrics Text
+                    </button>
+                    <button class="btn-action-large btn-complete-lyrics" id="reader-complete-action-button" onclick="markSelectedLyricsAsComplete()">
+                        Mark Complete
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="page-profile" class="page-view">
+            <div class="profile-container">
+                <div class="page-header">
+                    <img src="profile.png" alt="Profile Page Icon">
+                    <h1>Author Identity Profile</h1>
+                </div>
+
+                <div class="profile-card-top">
+                    <img src="applogo.png" alt="Moner Gaan Creator" class="profile-avatar">
+                    <div class="profile-names">
+                        <h2>Moner Gaan</h2>
+                        <p>@monergaanlofi</p>
+                        <div class="social-links-row">
+                            <a href="#" class="social-icon-btn"><img src="Telegram.png" alt="Telegram"></a>
+                            <a href="#" class="social-icon-btn"><img src="whatsapp.png" alt="Whatsapp"></a>
+                            <a href="#" class="social-icon-btn"><img src="youtube.png" alt="YouTube"></a>
+                            <a href="#" class="social-icon-btn"><img src="facebook.png" alt="Facebook"></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="description-box">
+                    <div class="description-title"><img src="Description.png" alt="Biographical Details"> Author Profile Summary</div>
+                    <div class="description-text">আমি তন্ময় রাম</div>
+                </div>
+
+                <div class="description-box">
+                    <div class="description-title"><img src="aiDescription.png" alt="AI Agent Systems"> Artificial Intelligence Core Disclaimer</div>
+                    <div class="description-text">এআই দিয়ে সকল কিছু তৈরি</div>
+                </div>
+
+                <div class="summary-grid" style="margin-top:24px;">
+                    <div class="summary-card">
+                        <div class="summary-icon-box"><img src="lyricshub.png" alt="Total Cards"></div>
+                        <div class="summary-info">
+                            <h4>Total Lyrics Cards</h4>
+                            <p id="profile-stat-total-cards">0</p>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon-box"><img src="view.png" alt="Total Views"></div>
+                        <div class="summary-info">
+                            <h4>Total Views Tracked</h4>
+                            <p id="profile-stat-total-views">0</p>
+                        </div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-icon-box"><img src="payout.png" alt="Total Revenues"></div>
+                        <div class="summary-info">
+                            <h4>Total Net Earnings</h4>
+                            <p>$<span id="profile-stat-total-earnings">0.00</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-section-title">Highest Tracked Impression Metric Views (Top 5)</div>
+                <div class="table-container">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Card Title</th>
+                                <th>Views Tracked</th>
+                            </tr>
+                        </thead>
+                        <tbody id="profile-top-views-list">
+                            </tbody>
+                    </table>
+                </div>
+
+                <div class="profile-section-title">Highest Performing Asset Revenue Generation (Top 5)</div>
+                <div class="table-container">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Card Title</th>
+                                <th>Revenue Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="profile-top-earnings-list">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="page-earning" class="page-view">
+            <div class="page-header">
+                <img src="Earning.png" alt="Earning Analysis Icon">
+                <h1>Financial Earnings & Assets Reporting</h1>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-icon-box"><img src="lyricscrad.png" alt="Cards Metric"></div>
+                    <div class="summary-info">
+                        <h4>Total Metrics Cards</h4>
+                        <p id="earning-panel-total-cards">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon-box"><img src="view.png" alt="Views Metric"></div>
+                    <div class="summary-info">
+                        <h4>Total Accumulation Views</h4>
+                        <p id="earning-panel-total-views">0</p>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-icon-box"><img src="payout.png" alt="Earnings Metric"></div>
+                    <div class="summary-info">
+                        <h4>Total Generated Profits</h4>
+                        <p>$<span id="earning-panel-total-earnings">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                <div class="summary-card" style="border-left: 4px solid var(--success-color);">
+                    <div class="summary-icon-box"><img src="pending.png" alt="Withdrawn"></div>
+                    <div class="summary-info">
+                        <h4>Total Payout Withdrawn</h4>
+                        <p>$<span id="earning-panel-ledger-payout">0.00</span></p>
+                    </div>
+                </div>
+                <div class="summary-card" style="border-left: 4px solid #f59e0b;">
+                    <div class="summary-icon-box"><img src="pending.png" alt="Pending"></div>
+                    <div class="summary-info">
+                        <h4>Pending Balance Remainder</h4>
+                        <p>$<span id="earning-panel-ledger-pending">0.00</span></p>
+                    </div>
+                </div>
+                <div class="summary-card" style="border-left: 4px solid var(--accent-color);">
+                    <div class="summary-icon-box"><img src="pending.png" alt="Lifetime"></div>
+                    <div class="summary-info">
+                        <h4>Lifetime Account Valuations</h4>
+                        <p>$<span id="earning-panel-ledger-lifetime">0.00</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="page-header" style="margin-top:40px; margin-bottom:20px;">
+                <h2 style="font-size: 18px; font-weight:700;">Segregated Card Asset Distribution Analytics</h2>
+            </div>
+
+            <div class="table-container">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Card Name</th>
+                            <th><div class="table-cell-with-icon"><img src="view.png" style="width:16px;" alt="Views"> Individual Views</div></th>
+                            <th><div class="table-cell-with-icon"><img src="payout.png" style="width:16px;" alt="Earnings"> Individual Earnings</div></th>
+                        </tr>
+                    </thead>
+                    <tbody id="earning-individual-cards-tbody">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+
+        <section id="page-thumbnail" class="page-view">
+            <div class="page-header">
+                <img src="thumbnail.png" alt="Thumbnail Design Vault">
+                <h1>High-Definition Card Thumbnail Repository</h1>
+            </div>
+
+            <div style="background: var(--bg-primary); border: 1px solid var(--border-color); padding:28px; border-radius: var(--radius-lg); margin-bottom: 32px; box-shadow: var(--shadow-sm);">
+                <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div class="form-group">
+                        <label class="form-label">Thumbnail Asset Label / Title</label>
+                        <input type="text" id="thumbnail-input-title" class="form-control" placeholder="Enter design or video tracking name...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Graphic Image Resource File</label>
+                        <input type="file" id="thumbnail-input-file" class="form-control" accept="image/*" onchange="processThumbnailImageUpload(event)">
+                    </div>
+                </div>
+                <div id="thumbnail-base64-cache-status" style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">No image selected yet.</div>
+                <button class="btn-primary" onclick="commitThumbnailAssetToVault()">Upload Graphic Item</button>
+            </div>
+
+            <div class="search-container">
+                <img src="search.png" class="search-icon-inside" alt="Search icon">
+                <input type="text" id="thumbnail-search-query" class="search-control" placeholder="Search saved items in your gallery..." oninput="renderThumbnailGallery()">
+            </div>
+
+            <div class="thumbnail-grid" id="thumbnail-display-gallery-grid">
+                </div>
+        </section>
+
+    </main>
+
+    <script>
+        /* Database Initialization Pipeline Pattern Setup Core Objects Engine Schema */
+        let state = {
+            lyrics: [],
+            ledger: {
+                totalPayout: 0.00,
+                pendingMoney: 0.00,
+                lifetimeIncome: 0.00
+            },
+            thumbnails: [],
+            currentActiveReaderCardId: null,
+            previousActivePageId: 'home'
+        };
+
+        const LOCAL_STORAGE_KEY = 'MONER_GAAN_SECURE_PERMANENT_VAULT_DB';
+
+        /* System Initial Boot Engineering Execution Lifecycle Handler Routine Setup */
+        window.addEventListener('DOMContentLoaded', () => {
+            loadApplicationVaultData();
+            synchronizeGlobalInterfaceElements();
+        });
+
+        /* Persistent Local Storage Data Restoration Interception Layer Engine Protocol */
+        function loadApplicationVaultData() {
+            try {
+                const applicationCachedRawJsonData = localStorage.getItem(LOCAL_STORAGE_KEY);
+                if (applicationCachedRawJsonData) {
+                    const compiledParsedDataObject = JSON.parse(applicationCachedRawJsonData);
+                    if (compiledParsedDataObject) {
+                        state.lyrics = compiledParsedDataObject.lyrics || [];
+                        state.ledger = compiledParsedDataObject.ledger || { totalPayout: 0.00, pendingMoney: 0.00, lifetimeIncome: 0.00 };
+                        state.thumbnails = compiledParsedDataObject.thumbnails || [];
+                    }
+                } else {
+                    injectDatabaseSeedMockRecords();
+                }
+            } catch (storageReadException) {
+                console.error("Critical State Pipeline Fault: Failed reading storage layer indexes.", storageReadException);
+                injectDatabaseSeedMockRecords();
+            }
+        }
+
+        /* Safe Commit Action Interface Wrapper Engine Mechanism for Hard Disk Synchronizations */
+        function commitApplicationDataToPermanentStorage() {
+            try {
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
+                synchronizeGlobalInterfaceElements();
+            } catch (storageWriteException) {
+                console.error("Critical LocalStorage Write Failure Execution Error Exception.", storageWriteException);
+                alert("Database Sync Failed: Storage limit reached or file access restricted.");
+            }
+        }
+
+        /* Systems Component Fallback Factory Mock Seeding Operations Method */
+        function injectDatabaseSeedMockRecords() {
+            state.lyrics = [
+                {
+                    id: "lyrics_card_1111",
+                    cardNumber: 1,
+                    name: "Amar Sonar Bangla - LoFi Remix",
+                    category: "Trending",
+                    text: "আমার সোনার বাংলা, আমি তোমায় ভালোবাসি।\nচিরদিন তোমার আকাশ, তোমার বাতাস, আমার প্রাণে বাজায় বাঁশি।\n\nThis premium LoFi ambient remix track is designed to blend traditional acoustic pride with modern studio beats.",
+                    views: 45000,
+                    earning: 125.50,
+                    date: new Date().toLocaleDateString(),
+                    status: "Active"
+                },
+                {
+                    id: "lyrics_card_2222",
+                    cardNumber: 2,
+                    name: "Tumi Kar Pashe Dhorbe Haat",
+                    category: "New list",
+                    text: "তুমি কার পাশে ধরবে হাত, কার গল্পে জুড়াবে রাত?\nআমি থেকে যাবো একলা একা, স্মৃতির পাতায় হবে না দেখা।\n\nAn emotionally driven melancholic lyrical poetry composition addressing standard classic lost companion situations.",
+                    views: 12000,
+                    earning: 34.20,
+                    date: new Date().toLocaleDateString(),
+                    status: "Active"
+                }
+            ];
+            state.ledger = {
+                totalPayout: 100.00,
+                pendingMoney: 59.70,
+                lifetimeIncome: 159.70
+            };
+            state.thumbnails = [
+                {
+                    id: "thumb_1",
+                    title: "Amar Sonar Bangla Premium Banner Track",
+                    image: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='800' viewBox='0 0 1600 800'><rect width='100%' height='100%' fill='%23f1f5f9'/><text x='50%' y='50%' font-family='sans-serif' font-size='48' fill='%2394a3b8' text-anchor='middle'>Moner Gaan Thumbnail Placeholder</text></svg>"
+                }
+            ];
+            commitApplicationDataToPermanentStorage();
+        }
+
+        /* Sidebar Control Toggle View Animation Routine Interface Methods */
+        function toggleSidebar() {
+            const sidebarElementNode = document.getElementById('appSidebar');
+            const overlayElementNode = document.getElementById('sidebarOverlay');
+            sidebarElementNode.classList.toggle('active');
+            overlayElementNode.classList.toggle('active');
+        }
+
+        /* Client-Side View Navigation Logic Switch State Engine Framework */
+        function navigateToPage(targetPageId, sidebarItemContextNode = null) {
+            const activePageNode = document.querySelector('.page-view.active-page');
+            if (activePageNode && activePageNode.id !== 'page-lyrics-details-reader') {
+                state.previousActivePageId = activePageNode.id.replace('page-', '');
+            }
+
+            const pageViewsList = document.querySelectorAll('.page-view');
+            pageViewsList.forEach(viewNode => viewNode.classList.remove('active-page'));
+
+            const targetedPageViewNode = document.getElementById(`page-${targetPageId}`);
+            if (targetedPageViewNode) {
+                targetedPageViewNode.classList.add('active-page');
+            }
+
+            if (sidebarItemContextNode) {
+                const sidebarActiveItemsList = document.querySelectorAll('.sidebar-item');
+                sidebarActiveItemsList.forEach(item => item.classList.remove('active'));
+                sidebarItemContextNode.classList.add('active');
+            }
+
+            const sidebarElementNode = document.getElementById('appSidebar');
+            if (sidebarElementNode.classList.contains('active')) {
+                toggleSidebar();
+            }
+
+            executeModularViewDataRefresh(targetPageId);
+        }
+
+        function navigateBackFromReader() {
+            navigateToPage(state.previousActivePageId || 'home');
+        }
+
+        /* Modular Interface View Content Synchronization Refresh Router Matrix */
+        function executeModularViewDataRefresh(viewModuleIdentifierKey) {
+            switch (viewModuleIdentifierKey) {
+                case 'home':
+                    renderHomeAnalysisDashboardView();
+                    break;
+                case 'edit':
+                    renderEditCardSelectionList();
+                    populateFormFinancialLedgerFields();
+                    break;
+                case 'trending':
+                    renderCategoryPipelineGrid('Trending', 'grid-trending');
+                    break;
+                case 'newlist':
+                    renderCategoryPipelineGrid('New list', 'grid-newlist');
+                    break;
+                case 'oldlist':
+                    renderCategoryPipelineGrid('Old list', 'grid-oldlist');
+                    break;
+                case 'lyricshub':
+                    renderCompletedLyricsHubVaultGrid();
+                    break;
+                case 'profile':
+                    renderAuthorIdentityProfileView();
+                    break;
+                case 'earning':
+                    renderFinancialEarningsReportView();
+                    break;
+                case 'thumbnail':
+                    renderThumbnailGallery();
+                    break;
+            }
+        }
+
+        function synchronizeGlobalInterfaceElements() {
+            const activeLyricsCardsCount = state.lyrics.filter(item => item.status === 'Active').length;
+            document.getElementById('global-lyrics-count').innerText = `Cards: ${activeLyricsCardsCount}`;
+        }
+
+        /* ================= SUBMODULE CONTROLLER: HOME VIEW RENDER ENGINE ================= */
+        function renderHomeAnalysisDashboardView() {
+            const visibleActiveTrackedLyrics = state.lyrics.filter(item => item.status === 'Active');
+            
+            const performanceSortedLyricsList = [...visibleActiveTrackedLyrics].sort((alphaItem, betaItem) => {
+                if (betaItem.views !== alphaItem.views) {
+                    return betaItem.views - alphaItem.views;
+                }
+                return betaItem.earning - alphaItem.earning;
+            });
+
+            let calculatedCumulativeSystemTotalViews = 0;
+            let calculatedCumulativeSystemTotalEarnings = 0.00;
+
+            const dataTableBodyNodeContainer = document.getElementById('home-analysis-table-body');
+            dataTableBodyNodeContainer.innerHTML = '';
+
+            performanceSortedLyricsList.forEach(lyricsItem => {
+                calculatedCumulativeSystemTotalViews += parseInt(lyricsItem.views || 0);
+                calculatedCumulativeSystemTotalEarnings += parseFloat(lyricsItem.earning || 0);
+
+                const tableRowHtmlTemplateString = `
+                    <tr>
+                        <td style="font-weight: 600;">${escapeHtmlOutput(lyricsItem.name)}</td>
+                        <td>${parseInt(lyricsItem.views || 0).toLocaleString()}</td>
+                        <td style="font-weight: 600; color: var(--success-color);">$${parseFloat(lyricsItem.earning || 0).toFixed(2)}</td>
+                    </tr>
+                `;
+                dataTableBodyNodeContainer.insertAdjacentHTML('beforeend', tableRowHtmlTemplateString);
+            });
+
+            if (performanceSortedLyricsList.length === 0) {
+                dataTableBodyNodeContainer.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted); padding:40px;">No operational analytics lines recorded. Populate cards via Edit view.</td></tr>`;
+            }
+
+            document.getElementById('home-total-views').innerText = calculatedCumulativeSystemTotalViews.toLocaleString();
+            document.getElementById('home-total-earning').innerText = calculatedCumulativeSystemTotalEarnings.toFixed(2);
+        }
+
+        /* ================= SUBMODULE CONTROLLER: EDIT COMPONENT CONTROL OPERATIONS ================= */
+        function publishLyricsCard() {
+            const inputTitleNameNode = document.getElementById('edit-lyrics-name');
+            const inputCategorySelectionNode = document.getElementById('edit-lyrics-category');
+            const inputLyricsContentNode = document.getElementById('edit-lyrics-text');
+
+            const sanitizedTitleValue = inputTitleNameNode.value.trim();
+            const selectedCategoryValue = inputCategorySelectionNode.value;
+            const sanitizedLyricsValue = inputLyricsContentNode.value.trim();
+
+            if (!sanitizedTitleValue || !sanitizedLyricsValue) {
+                alert("Validation Failed: Lyrics card name and structured text are both strictly required before publishing.");
+                return;
+            }
+
+            const totalCreatedItemsEverCounter = state.lyrics.length;
+            const calculatedNextSequentialCardNumber = totalCreatedItemsEverCounter + 1;
+            const uniqueGeneratedDeterministicCardStringId = `lyrics_uid_index_${Date.now()}_${Math.floor(Math.random()*1000)}`;
+
+            const instantiatedLyricsCardPayloadObject = {
+                id: uniqueGeneratedDeterministicCardStringId,
+                cardNumber: calculatedNextSequentialCardNumber,
+                name: sanitizedTitleValue,
+                category: selectedCategoryValue,
+                text: sanitizedLyricsValue,
+                views: 0,
+                earning: 0.00,
+                date: new Date().toLocaleDateString(),
+                status: "Active"
+            };
+
+            state.lyrics.push(instantiatedLyricsCardPayloadObject);
+            commitApplicationDataToPermanentStorage();
+
+            inputTitleNameNode.value = '';
+            inputLyricsContentNode.value = '';
+
+            alert(`Success: Lyrics card safely added successfully! Assigned Index Card position number #${calculatedNextSequentialCardNumber}`);
+            renderEditCardSelectionList();
+        }
+
+        function renderEditCardSelectionList() {
+            const searchInputFilterValue = document.getElementById('edit-card-search').value.toLowerCase();
+            const containerNodeTarget = document.getElementById('edit-card-selection-list');
+            containerNodeTarget.innerHTML = '';
+
+            const visibleActiveTrackedLyrics = state.lyrics.filter(item => item.status === 'Active');
+            const filteredCardSelectionItemsList = visibleActiveTrackedLyrics.filter(card => card.name.toLowerCase().includes(searchInputFilterValue));
+
+            filteredCardSelectionItemsList.forEach(cardItem => {
+                const elementRowDivNodeItem = document.createElement('div');
+                elementRowDivNodeItem.className = 'edit-row-card-select';
+                elementRowDivNodeItem.innerHTML = `
+                    <div><strong>#${cardItem.cardNumber}</strong> - ${escapeHtmlOutput(cardItem.name)} <span style="font-size:11px; color:var(--text-muted);">(${cardItem.category})</span></div>
+                    <div style="font-size:12px; color:var(--accent-color); font-weight:600;">Select &rarr;</div>
+                `;
+                elementRowDivNodeItem.onclick = () => activateIndividualCardMetricsEditorPanel(cardItem.id);
+                containerNodeTarget.appendChild(elementRowDivNodeItem);
+            });
+
+            if (filteredCardSelectionItemsList.length === 0) {
+                containerNodeTarget.innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:13px; padding:12px;">No matching operational lyrics card found.</div>`;
+            }
+        }
+
+        function activateIndividualCardMetricsEditorPanel(targetUniqueIdStringKey) {
+            const matchingCardTargetObject = state.lyrics.find(item => item.id === targetUniqueIdStringKey);
+            if (!matchingCardTargetObject) return;
+
+            state.currentActiveReaderCardId = targetUniqueIdStringKey;
+            
+            document.getElementById('edit-selected-card-title-display').innerText = `Modifying: #${matchingCardTargetObject.cardNumber} - ${matchingCardTargetObject.name}`;
+            document.getElementById('edit-selected-views').value = matchingCardTargetObject.views || 0;
+            document.getElementById('edit-selected-earning').value = matchingCardTargetObject.earning || 0.00;
+
+            document.getElementById('edit-stats-input-fields').style.display = 'block';
+        }
+
+        function saveSelectedCardMetrics() {
+            if (!state.currentActiveReaderCardId) {
+                alert("Operational Error: No individual lyrics card tracking context profile designated active currently.");
+                return;
+            }
+
+            const targetedMatchingCardObjectIndex = state.lyrics.findIndex(item => item.id === state.currentActiveReaderCardId);
+            if (targetedMatchingCardObjectIndex === -1) return;
+
+            const freshUpdatedViewsIntegerAmount = parseInt(document.getElementById('edit-selected-views').value) || 0;
+            const freshUpdatedEarningsFloatingAmount = parseFloat(document.getElementById('edit-selected-earning').value) || 0.00;
+
+            state.lyrics[targetedMatchingCardObjectIndex].views = Math.max(0, freshUpdatedViewsIntegerAmount);
+            state.lyrics[targetedMatchingCardObjectIndex].earning = Math.max(0, freshUpdatedEarningsFloatingAmount);
+
+            commitApplicationDataToPermanentStorage();
+            alert("Card performance metrics successfully saved and aggregated successfully!");
+            
+            document.getElementById('edit-stats-input-fields').style.display = 'none';
+            state.currentActiveReaderCardId = null;
+            renderEditCardSelectionList();
+        }
+
+        function populateFormFinancialLedgerFields() {
+            document.getElementById('ledger-total-payout').value = state.ledger.totalPayout || 0.00;
+            document.getElementById('ledger-pending-money').value = state.ledger.pendingMoney || 0.00;
+            document.getElementById('ledger-lifetime-income').value = state.ledger.lifetimeIncome || 0.00;
+        }
+
+        function saveFinancialLedgerInfo() {
+            const inputPayoutValue = parseFloat(document.getElementById('ledger-total-payout').value) || 0.00;
+            const inputPendingValue = parseFloat(document.getElementById('ledger-pending-money').value) || 0.00;
+            const inputLifetimeValue = parseFloat(document.getElementById('ledger-lifetime-income').value) || 0.00;
+
+            state.ledger.totalPayout = Math.max(0, inputPayoutValue);
+            state.ledger.pendingMoney = Math.max(0, inputPendingValue);
+            state.ledger.lifetimeIncome = Math.max(0, inputLifetimeValue);
+
+            commitApplicationDataToPermanentStorage();
+            alert("Global ledger processing sheets successfully saved and indexed!");
+        }
+
+
+        /* ================= SUBMODULE CONTROLLER: CATEGORY SEGREGATIONS PIPELINES ================= */
+        function renderCategoryPipelineGrid(targetedPipelineCategoryStringName, targetedUiGridDisplayNodeId) {
+            const gridNodeTargetReference = document.getElementById(targetedUiGridDisplayNodeId);
+            if (!gridNodeTargetReference) return;
+
+            gridNodeTargetReference.innerHTML = '';
+
+            const filteredPipelineCategoryCardsList = state.lyrics.filter(card => card.category === targetedPipelineCategoryStringName && card.status === 'Active');
+
+            filteredPipelineCategoryCardsList.forEach(cardItem => {
+                const computedCardHtmlStringTemplate = `
+                    <div class="lyrics-card">
+                        <div class="card-number-badge">#${cardItem.cardNumber}</div>
+                        <div class="card-header-info">
+                            <h3 class="card-title">${escapeHtmlOutput(cardItem.name)}</h3>
+                            <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;">Pipeline: ${cardItem.category}</div>
+                        </div>
+                        <div class="card-meta-row">
+                            <div class="meta-item"><img src="view.png" alt="Views"> ${parseInt(cardItem.views || 0).toLocaleString()}</div>
+                            <div class="meta-item"><img src="Earning.png" alt="Earnings"> $${parseFloat(cardItem.earning || 0).toFixed(2)}</div>
+                            <div class="meta-item" style="grid-column: 1 / -1;"><img src="date.png" alt="Date"> Published: ${cardItem.date || 'N/A'}</div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-view-details" onclick="openDetailedLyricsReaderMode('${cardItem.id}')">View Details</button>
+                            <button class="btn-delete-card" onclick="safelyDeleteLyricsCardFromPipeline('${cardItem.id}')" title="Delete Track Card">
+                                <img src="valo.png" alt="Delete Icon">
+                            </button>
+                        </div>
+                    </div>
+                `;
+                gridNodeTargetReference.insertAdjacentHTML('beforeend', computedCardHtmlStringTemplate);
+            });
+
+            if (filteredPipelineCategoryCardsList.length === 0) {
+                gridNodeTargetReference.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding:60px; border: 1px dashed var(--border-color); border-radius:var(--radius-lg);">No items are cataloged within this tracking pipeline block presently.</div>`;
+            }
+        }
+
+        function safelyDeleteLyricsCardFromPipeline(targetIdStringKeyToDelete) {
+            if (!confirm("Are you absolutely certain you want to remove this lyrics item card from the database repository permanently? This operation is irreversible.")) {
+                return;
+            }
+
+            const matchingItemTargetIndex = state.lyrics.findIndex(item => item.id === targetIdStringKeyToDelete);
+            if (matchingItemTargetIndex !== -1) {
+                state.lyrics.splice(matchingItemTargetIndex, 1);
+                commitApplicationDataToPermanentStorage();
+                
+                const activePageViewFrame = document.querySelector('.page-view.active-page');
+                if (activePageViewFrame) {
+                    const extractedIdStringKeyToken = activePageViewFrame.id.replace('page-', '');
+                    executeModularViewDataRefresh(extractedIdStringKeyToken);
+                }
+            }
+        }
+
+
+        /* ================= SUBMODULE CONTROLLER: COMPLETED LYRICS HUB VAULT ================= */
+        function renderCompletedLyricsHubVaultGrid() {
+            const vaultContainerGridNodeTarget = document.getElementById('grid-lyricshub');
+            vaultContainerGridNodeTarget.innerHTML = '';
+
+            const completedVaultLyricsCardsList = state.lyrics.filter(card => card.status === 'Completed');
+
+            completedVaultLyricsCardsList.forEach(cardItem => {
+                const computedVaultRowCardTemplate = `
+                    <div class="lyrics-card" style="border-top: 4px solid var(--success-color);">
+                        <div class="card-number-badge" style="background: #ecfdf5; color: var(--success-color);">#${cardItem.cardNumber}</div>
+                        <div class="card-header-info">
+                            <h3 class="card-title">${escapeHtmlOutput(cardItem.name)}</h3>
+                            <div style="font-size:11px; color:var(--success-color); font-weight:600; margin-bottom:8px;">Status: Vault Completed</div>
+                        </div>
+                        <div class="card-meta-row">
+                            <div class="meta-item"><img src="view.png" alt="Views"> ${parseInt(cardItem.views || 0).toLocaleString()}</div>
+                            <div class="meta-item"><img src="Earning.png" alt="Earnings"> $${parseFloat(cardItem.earning || 0).toFixed(2)}</div>
+                            <div class="meta-item" style="grid-column: 1 / -1;"><img src="date.png" alt="Date"> Track Date: ${cardItem.date || 'N/A'}</div>
+                        </div>
+                        <div class="card-actions" style="grid-template-columns: 1fr auto;">
+                            <button class="btn-view-details" onclick="openDetailedLyricsReaderMode('${cardItem.id}')">View Text</button>
+                            <button class="btn-delete-card" onclick="safelyDeleteLyricsCardFromPipeline('${cardItem.id}')" title="Delete Track Card">
+                                <img src="valo.png" alt="Delete Icon">
+                            </button>
+                        </div>
+                    </div>
+                `;
+                vaultContainerGridNodeTarget.insertAdjacentHTML('beforeend', computedVaultRowCardTemplate);
+            });
+
+            if (completedVaultLyricsCardsList.length === 0) {
+                vaultContainerGridNodeTarget.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding:60px; border:1px dashed var(--border-color); border-radius:var(--radius-lg);">The completed vault repository is currently empty. Direct items here by clicking Complete inside running running category pipelines.</div>`;
+            }
+        }
+
+
+        /* ================= SUBMODULE CONTROLLER: SPECIFIC DETAILS READER MODE INTERFACE ================= */
+        function openDetailedLyricsReaderMode(targetLyricsUniqueCardIdKeyString) {
+            const matchingCardTargetObject = state.lyrics.find(item => item.id === targetLyricsUniqueCardIdKeyString);
+            if (!matchingCardTargetObject) return;
+
+            state.currentActiveReaderCardId = targetLyricsUniqueCardIdKeyString;
+
+            document.getElementById('reader-display-title').innerText = matchingCardTargetObject.name;
+            document.getElementById('reader-display-body').innerText = matchingCardTargetObject.text;
+
+            const completeActionButtonWidgetNode = document.getElementById('reader-complete-action-button');
+            if (matchingCardTargetObject.status === 'Completed') {
+                completeActionButtonWidgetNode.style.display = 'none';
+            } else {
+                completeActionButtonWidgetNode.style.display = 'flex';
+            }
+
+            navigateToPage('lyrics-details-reader');
+        }
+
+        function copyTitleToClipboard() {
+            const titleValueTextString = document.getElementById('reader-display-title').innerText;
+            navigator.clipboard.writeText(titleValueTextString).then(() => {
+                alert("Success: Title text track string successfully copied to clipboard!");
+            }).catch(err => {
+                console.error("Clipboard Intercept Write Fault Failure.", err);
+            });
+        }
+
+        function copyLyricsContentToClipboard() {
+            const lyricsBodyLinesContentString = document.getElementById('reader-display-body').innerText;
+            navigator.clipboard.writeText(lyricsBodyLinesContentString).then(() => {
+                alert("Success: Full running lyric lines text blocks successfully copied to clipboard buffer!");
+            }).catch(err => {
+                console.error("Clipboard Intercept Write Fault Failure.", err);
+            });
+        }
+
+        function markSelectedLyricsAsComplete() {
+            if (!state.currentActiveReaderCardId) return;
+
+            const matchingCardTargetIndex = state.lyrics.findIndex(item => item.id === state.currentActiveReaderCardId);
+            if (matchingCardTargetIndex === -1) return;
+
+            state.lyrics[matchingCardTargetIndex].status = 'Completed';
+            commitApplicationDataToPermanentStorage();
+
+            alert("Asset Matrix Processing Notice: Card successfully marked as complete! It has migrated from current pipeline category to the Completed Lyrics Hub Vault.");
+            navigateToPage('lyricshub');
+        }
+
+
+        /* ================= SUBMODULE CONTROLLER: AUTHOR IDENTITY PROFILE VIEW MODULE ================= */
+        function renderAuthorIdentityProfileView() {
+            const activeLyricsCardsArray = state.lyrics.filter(card => card.status === 'Active' || card.status === 'Completed');
+            
+            let accumulatedViewsSum = 0;
+            let accumulatedEarningsSum = 0.00;
+
+            activeLyricsCardsArray.forEach(card => {
+                accumulatedViewsSum += parseInt(card.views || 0);
+                accumulatedEarningsSum += parseFloat(card.earning || 0);
+            });
+
+            document.getElementById('profile-stat-total-cards').innerText = activeLyricsCardsArray.length;
+            document.getElementById('profile-stat-total-views').innerText = accumulatedViewsSum.toLocaleString();
+            document.getElementById('profile-stat-total-earnings').innerText = accumulatedEarningsSum.toFixed(2);
+
+            const topViewsSortedCardsList = [...activeLyricsCardsArray].sort((alpha, beta) => (beta.views || 0) - (alpha.views || 0)).slice(0, 5);
+            const topEarningsSortedCardsList = [...activeLyricsCardsArray].sort((alpha, beta) => (beta.earning || 0.00) - (alpha.earning || 0.00)).slice(0, 5);
+
+            const viewsTableBodyTarget = document.getElementById('profile-top-views-list');
+            viewsTableBodyTarget.innerHTML = '';
+            topViewsSortedCardsList.forEach(cardItem => {
+                viewsTableBodyTarget.insertAdjacentHTML('beforeend', `
+                    <tr>
+                        <td><strong>#${cardItem.cardNumber}</strong> - ${escapeHtmlOutput(cardItem.name)}</td>
+                        <td>${parseInt(cardItem.views || 0).toLocaleString()} views</td>
+                    </tr>
+                `);
+            });
+            if (topViewsSortedCardsList.length === 0) viewsTableBodyTarget.innerHTML = `<tr><td colspan="2" style="text-align:center; color:var(--text-muted);">No metrics logged.</td></tr>`;
+
+            const earningsTableBodyTarget = document.getElementById('profile-top-earnings-list');
+            earningsTableBodyTarget.innerHTML = '';
+            topEarningsSortedCardsList.forEach(cardItem => {
+                earningsTableBodyTarget.insertAdjacentHTML('beforeend', `
+                    <tr>
+                        <td><strong>#${cardItem.cardNumber}</strong> - ${escapeHtmlOutput(cardItem.name)}</td>
+                        <td style="color:var(--success-color); font-weight:600;">$${parseFloat(cardItem.earning || 0.00).toFixed(2)}</td>
+                    </tr>
+                `);
+            });
+            if (topEarningsSortedCardsList.length === 0) earningsTableBodyTarget.innerHTML = `<tr><td colspan="2" style="text-align:center; color:var(--text-muted);">No financial metrics logged.</td></tr>`;
+        }
+
+
+        /* ================= SUBMODULE CONTROLLER: FINANCIAL EARNINGS REPORT COMPONENT ================= */
+        function renderFinancialEarningsReportView() {
+            const activeLyricsCardsArray = state.lyrics.filter(card => card.status === 'Active' || card.status === 'Completed');
+            
+            let accumulatedViewsSum = 0;
+            let accumulatedEarningsSum = 0.00;
+
+            const subCardsTableBodyTargetNode = document.getElementById('earning-individual-cards-tbody');
+            subCardsTableBodyTargetNode.innerHTML = '';
+
+            activeLyricsCardsArray.forEach(cardItem => {
+                accumulatedViewsSum += parseInt(cardItem.views || 0);
+                accumulatedEarningsSum += parseFloat(cardItem.earning || 0);
+
+                const itemRowHtmlTemplateString = `
+                    <tr>
+                        <td><strong>#${cardItem.cardNumber}</strong> - ${escapeHtmlOutput(cardItem.name)} <span style="font-size:11px; color:var(--text-muted);">(${cardItem.category})</span></td>
+                        <td>${parseInt(cardItem.views || 0).toLocaleString()}</td>
+                        <td style="font-weight:600; color:var(--success-color);">$${parseFloat(cardItem.earning || 0.00).toFixed(2)}</td>
+                    </tr>
+                `;
+                subCardsTableBodyTargetNode.insertAdjacentHTML('beforeend', itemRowHtmlTemplateString);
+            });
+
+            if (activeLyricsCardsArray.length === 0) {
+                subCardsTableBodyTargetNode.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--text-muted); padding:32px;">No individual asset accounts cataloged yet.</td></tr>`;
+            }
+
+            document.getElementById('earning-panel-total-cards').innerText = activeLyricsCardsArray.length;
+            document.getElementById('earning-panel-total-views').innerText = accumulatedViewsSum.toLocaleString();
+            document.getElementById('earning-panel-total-earnings').innerText = accumulatedEarningsSum.toFixed(2);
+
+            document.getElementById('earning-panel-ledger-payout').innerText = parseFloat(state.ledger.totalPayout || 0.00).toFixed(2);
+            document.getElementById('earning-panel-ledger-pending').innerText = parseFloat(state.ledger.pendingMoney || 0.00).toFixed(2);
+            document.getElementById('earning-panel-ledger-lifetime').innerText = parseFloat(state.ledger.lifetimeIncome || 0.00).toFixed(2);
+        }
+
+
+        /* ================= SUBMODULE CONTROLLER: HIGH DEFINITION THUMBNAIL STORAGE GALLERY ================= */
+        let temporaryBase64ThumbnailImageCacheString = null;
+
+        function processThumbnailImageUpload(formFileChangeEventContext) {
+            const fileReferenceTargetObject = formFileChangeEventContext.target.files[0];
+            const displayLabelNodeStatus = document.getElementById('thumbnail-base64-cache-status');
+            
+            if (!fileReferenceTargetObject) {
+                temporaryBase64ThumbnailImageCacheString = null;
+                displayLabelNodeStatus.innerText = "No image selected yet.";
+                return;
+            }
+
+            const dataFileReaderInstanceEngine = new FileReader();
+            dataFileReaderInstanceEngine.onload = function(readerEventResultPayload) {
+                temporaryBase64ThumbnailImageCacheString = readerEventResultPayload.target.result;
+                displayLabelNodeStatus.innerText = `Image ready binary payload converted successfully! (${(fileReferenceTargetObject.size/1024).toFixed(1)} KB)`;
+            };
+            dataFileReaderInstanceEngine.readAsDataURL(fileReferenceTargetObject);
+        }
+
+        function commitThumbnailAssetToVault() {
+            const inputTitleWidgetElement = document.getElementById('thumbnail-input-title');
+            const sanitizedTitleValue = inputTitleWidgetElement.value.trim();
+
+            if (!sanitizedTitleValue || !temporaryBase64ThumbnailImageCacheString) {
+                alert("Validation Exception Fault Error: Both a descriptive title and an actual visual image file asset must be supplied.");
+                return;
+            }
+
+            const instantiatedThumbnailRecordPayloadObject = {
+                id: `thumb_uid_${Date.now()}`,
+                title: sanitizedTitleValue,
+                image: temporaryBase64ThumbnailImageCacheString
+            };
+
+            state.thumbnails.push(instantiatedThumbnailRecordPayloadObject);
+            commitApplicationDataToPermanentStorage();
+
+            inputTitleWidgetElement.value = '';
+            document.getElementById('thumbnail-input-file').value = '';
+            document.getElementById('thumbnail-base64-cache-status').innerText = "No image selected yet.";
+            temporaryBase64ThumbnailImageCacheString = null;
+
+            alert("Success: Graphics asset successfully added to the system gallery!");
+            renderThumbnailGallery();
+        }
+
+        function renderThumbnailGallery() {
+            const searchInputQueryFilterString = document.getElementById('thumbnail-search-query').value.toLowerCase();
+            const galleryTargetContainerGridNode = document.getElementById('thumbnail-display-gallery-grid');
+            
+            galleryTargetContainerGridNode.innerHTML = '';
+
+            const filteredGalleryItemsCollectionList = state.thumbnails.filter(thumb => thumb.title.toLowerCase().includes(searchInputQueryFilterString));
+
+            filteredGalleryItemsCollectionList.forEach(thumbCardItem => {
+                const computedCardHtmlStringTemplate = `
+                    <div class="thumbnail-card">
+                        <div class="thumbnail-image-container">
+                            <img src="${thumbCardItem.image}" alt="${escapeHtmlOutput(thumbCardItem.title)}">
+                        </div>
+                        <div class="thumbnail-info-box">
+                            <div class="thumbnail-title">${escapeHtmlOutput(thumbCardItem.title)}</div>
+                            <button style="margin-top:10px; background:none; border:none; color:var(--danger-color); font-size:12px; cursor:pointer; font-weight:600;" onclick="removeThumbnailCardAssetItem('${thumbCardItem.id}')">Remove Item</button>
+                        </div>
+                    </div>
+                `;
+                galleryTargetContainerGridNode.insertAdjacentHTML('beforeend', computedCardHtmlStringTemplate);
+            });
+
+            if (filteredGalleryItemsCollectionList.length === 0) {
+                galleryTargetContainerGridNode.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding:40px;">No custom graphics items match your current filter parameters or the gallery is empty.</div>`;
+            }
+        }
+
+        function removeThumbnailCardAssetItem(targetIdStringKeyToRemove) {
+            if (!confirm("Are you sure you want to delete this specific 16:8 thumbnail image component instance?")) return;
+
+            const matchingItemIndexPosition = state.thumbnails.findIndex(item => item.id === targetIdStringKeyToRemove);
+            if (matchingItemIndexPosition !== -1) {
+                state.thumbnails.splice(matchingItemIndexPosition, 1);
+                commitApplicationDataToPermanentStorage();
+                renderThumbnailGallery();
+            }
+        }
+
+        /* SYSTEMS SECURITY: ANTI XSS SANITIZATION */
+        function escapeHtmlOutput(dirtyUnsafeRawInputString) {
+            if (!dirtyUnsafeRawInputString) return '';
+            return dirtyUnsafeRawInputString
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
